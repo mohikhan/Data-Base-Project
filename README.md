@@ -36,9 +36,131 @@ npm, SQL, table plus.
 4. create a new PostgreSQL connection in that enter details similar to db.js in server folder.
 5. Open terminal, enter psql postgres
 6. Now run following queries in the same terminal
-7. After running these queries go to client folder and run npm start
-8. Open two terminals in VSCODE, in one terminal goto server folder and run nodemon index while in other terminal, goto client folder and run npm start
-9. After running these commands you will see the web application running in the browser.
+   <details>
+     <summary>Click me!</summary>
+     create table district(district_id int, A2 varchar(20), A3 varchar(30), A4 int,
+					 A5 int, A6 int, A7 int, A8 int, A9 int, A10 real, A11 int,
+					 A12 real, A13 real, A14 int, A15 int, A16 int,
+					 Primary key(district_id));
+     
+     create table account(account_id int, district_id int, frequency varchar(20), 
+    					 date Date,
+    					Primary key(account_id),
+    					foreign key(district_id) REFERENCES district on delete set NULL);
+       				 
+      create table loan(loan_id int, account_id int, date Date, amount int, duration int,
+      				 payments real, status varchar(20),
+      				 Primary key(loan_id),
+      				 foreign key(account_id) REFERENCES account on delete cascade);
+      				 
+      create table order1 (order_id int, account_id int, bank_to varchar(20),
+      				  account_to int, amount real, k_symbol varchar(20),
+      				  Primary key(order_id),
+      				  foreign key(account_id) REFERENCES account on delete cascade);
+    				  
+      create table trans(trans_id int, account_id int, date Date, type varchar(20),
+      				  operation varchar(20), amount int, balance int,
+      				  k_symbol varchar(20), bank varchar(20), account int,
+      				  primary key(trans_id),
+      				  foreign key(account_id) REFERENCES account on delete cascade);
+      				  
+      create table client(client_id int, gender varchar(20), birth_date Date, 
+      				   district_id int,
+      				   primary key(client_id),
+      				   foreign key(district_id) REFERENCES district on delete set NULL);
+      				  
+      create table disp(disp_id int, client_id int, account_id int, type varchar(20),
+      				 primary key(disp_id),
+      				 foreign key(account_id) REFERENCES account on delete cascade,
+      				 foreign key(client_id) references client on delete cascade);
+      				 
+      create table card(card_id int, disp_id int, type varchar(20), issued Date,
+      				primary key(card_id),
+      				foreign key(disp_id) references disp on delete cascade);
+      
+      update account set frequency = 'WEEKLY ISSUANCE' where frequency = 'POPLATEK TYDNE'; <br/>
+      update account set frequency = 'MONTHLY ISSUANCE' where frequency = 'POPLATEK MESICNE'; <br/>
+      update account set frequency = 'EVERY TRANSACTION' where frequency = 'POPLATEK PO OBRATU'; <br/>
+      update account set frequency = 'EVERY TRANSACTION' where frequency = 'POPLATEK PO OBRATU'; <br/>
+   
+      alter table account RENAME column frequency to statement_frequency; <br/>
+      alter table account RENAME column date to account_opening_date; <br/>
+      
+      alter table disp rename to Disposition; <br/>
+      alter table disposition rename column type to disposition_type; <br/>
+
+      alter table order1 rename to payments; <br/>
+   
+      alter table payments rename column k_symbol to payment_for; <br/>
+      update payments set payment_for = 'HOUSEHOLD' where payment_for = 'SIPO'; <br/>
+      update payments set payment_for = 'LOAN' where payment_for = 'UVER'; <br/>
+   
+      alter table trans rename to transactions; <br/>
+      alter table transactions rename column trans_id to transaction_id; <br/>
+      alter table transactions rename column date to transaction_date; <br/>
+      alter table transactions rename column type to transaction_type; <br/>
+      alter table transactions rename column operation to transaction_mode; <br/>
+      alter table transactions rename column k_symbol to transaction_for; <br/>
+      
+      update transactions set transaction_for = 'INSURANCE' where transaction_for = 'POJISTNE'; <br/>
+      update transactions set transaction_for = 'STATEMENT' where transaction_for = 'SLUZBY'; <br/>
+      update transactions set transaction_for = 'INTEREST CREDITED' where transaction_for = 'UROK'; <br/>
+      update transactions set transaction_for = 'NEGATIVE BALANCE' where transaction_for = 'SANKC. UROK'; <br/>
+      update transactions set transaction_for = 'HOUSEHOLD' where transaction_for = 'SIPO'; <br/>
+      update transactions set transaction_for = 'PENSION' where transaction_for = 'DUCHOD'; <br/>
+      update transactions set transaction_for = 'LOAN' where transaction_for = 'UVER'; <br/>
+      
+      ALTER TABLE transactions ALTER COLUMN transaction_mode TYPE varchar(30); <br/>
+      
+      update transactions set transaction_mode = 'CREDIT CARD WITHDRAWAL' where transaction_mode = 'VYBER KARTOU'; <br/>
+      update transactions set transaction_mode = 'CREDIT IN CASH' where transaction_mode = 'VKLAD'; <br/>
+      update transactions set transaction_mode = 'COLLECTION FROM ANOTHER BANK' where transaction_mode = 'PREVOD Z UCTU'; <br/>
+      update transactions set transaction_mode = 'WITHDRAWAL IN CASH' where transaction_mode = 'VYBER'; <br/>
+      update transactions set transaction_mode = 'REMITTANCE TO ANOTHER BANK' where transaction_mode = 'PREVOD NA UCET'; <br/>
+      update transactions set transaction_type = 'CREDIT' where transaction_type = 'PRIJEM'; <br/>
+      update transactions set transaction_type = 'WITHDRAWAL' where transaction_type = 'VYDAJ'; <br/>
+      
+      alter table transactions rename column bank to bank_to; <br/>
+      alter table transactions rename column account to account_to; <br/>
+      alter table transactions rename column amount to transaction_amount; <br/>
+      alter table transactions rename column balance to account_balance; <br/>
+      
+      alter table loan rename column date to loan_granted_on; <br/>
+      alter table loan rename column Amount to loan_amount; <br/>
+      alter table loan rename column Duration to loan_duration; <br/>
+      alter table loan rename column Payments to monthly_payments; <br/>
+      alter table loan rename column Status to loan_status; <br/>
+      
+      ALTER TABLE loan ALTER COLUMN loan_status TYPE varchar(40); <br/>
+      
+      update loan set loan_status = 'CONTRACT FINISHED, LOAN PAYED' where loan_status = 'A'; <br/>
+      update loan set loan_status = 'CONTRACT FINISHED, LOAN NOT PAYED' where loan_status = 'B'; <br/>
+      update loan set loan_status = 'RUNNING CONTRACT, OKAY SO FAR' where loan_status = 'C'; <br/>
+      update loan set loan_status = 'RUNNING CONTRACT, CLIENT IN DEBT' where loan_status = 'D'; <br/>
+      
+      alter table card rename column issued to issued_on; <br/>
+      
+      alter table district rename A2 to district_name; <br/>
+      alter table district rename A3 to district_region; <br/>
+      alter table district rename A4 to number_of_inhabitants; <br/>
+      alter table district rename A9 to number_of_cities; <br/>
+      alter table district rename A10 to ratio; <br/>
+      alter table district rename A11 to avg_salary; <br/>
+      alter table district rename A12 to unemployment_rate_95; <br/>
+      alter table district rename A13 to unemployment_rate_96; <br/>
+      alter table district rename A15 to crimes_in_95; <br/>
+      alter table district rename A16 to crimes_in_96; <br/>
+      
+      ALTER TABLE district DROP COLUMN A5; <br/>
+      ALTER TABLE district DROP COLUMN A6; <br/>
+      ALTER TABLE district DROP COLUMN A7; <br/>
+      ALTER TABLE district DROP COLUMN A8; <br/>
+      ALTER TABLE district DROP COLUMN A14; <br/>
+   </details>
+   
+8. After running these queries go to client folder and run npm start
+9. Open two terminals in VSCODE, in one terminal goto server folder and run nodemon index while in other terminal, goto client folder and run npm start
+10. After running these commands you will see the web application running in the browser.
 
 <img width="807" alt="image" src="https://github.com/mohikhan/Data-Base-Project/assets/20306973/183057c8-84bd-4a64-a6b7-6bd687943ff9" />
 <img width="807" alt="image" src="https://github.com/mohikhan/Data-Base-Project/assets/20306973/c5c44589-1114-4d4a-9bae-7e339e88cc30" />
